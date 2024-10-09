@@ -39,9 +39,11 @@ def get_image_link(source: dict) -> str:
 def get_title(source: dict) -> str:
     return source.get("sub", "")
 
+
 def get_date(source: dict) -> str:
     dt = source.get("time", "")
     return datetime.datetime.fromtimestamp(dt).strftime('%a, %d %b %Y %H:%M:%S') + " GMT"
+
 
 def get_text(source: dict) -> str:
     text = source.get("com")
@@ -118,7 +120,7 @@ def change_comments(no: int, path: str, last_modified: str) -> None:
     headers = {"If-Modified-Since": last_modified}
     comments = thread["replies"]
     link = fr"https://boards.4channel.org/biz/thread/{no}.json"
-    reply = requests.get(link, headers=headers)
+    reply = requests.get(link) #headers=headers
     if not reply or reply.status_code == 304:
         return
     reply = reply.json()
@@ -196,6 +198,17 @@ def archive_rec() -> None:
         json.dump(config, file)
 
 
+def time_it(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        func(*args, **kwargs)
+        end = time.time()
+        print('Ellapsed sync time: {}'.format(end - start))
+
+    return wrapper
+
+
+@time_it
 def main():
     try:
         with open("config.json", "r") as file:
