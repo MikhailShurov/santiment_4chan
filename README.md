@@ -59,7 +59,7 @@ after the end of update).
 + In function ```get_text``` I added ```""``` as default value to return. Because it can return ```None``` and then
   raise an error
 
-### Perfomance
+### Performance
 
 + Collecting from catalog became 4 times faster (53 sec. vs 218 sec.)
   ![catalog scraper updated perfomance](performance/CATALOG.png)
