@@ -120,7 +120,7 @@ def change_comments(no: int, path: str, last_modified: str) -> None:
     headers = {"If-Modified-Since": last_modified}
     comments = thread["replies"]
     link = fr"https://boards.4channel.org/biz/thread/{no}.json"
-    reply = requests.get(link) #headers=headers
+    reply = requests.get(link, headers=headers)
     if not reply or reply.status_code == 304:
         return
     reply = reply.json()
@@ -159,8 +159,10 @@ def check_catalog() -> None:
             no = j["no"]
             path = os.path.join(directory, f"{no}.json")
             if os.path.exists(path):
+
                 change_comments(no, directory, last_modified)
             else:
+
                 create_file(no, directory)
             sleep = 1 - (time.time() - start) if (1 - (time.time() - start)) > 0 else 0
             time.sleep(sleep)
@@ -186,11 +188,15 @@ def archive_rec() -> None:
             dif = reply[i + 1:]
             break
     for i in dif:
-        start = time.time()
-        if os.path.exists(os.path.join(config["folder_path"], f"{i}.json")):
-            change_comments(i, config["folder_path"], last_modified)
-        else:
-            create_file(i, config["folder_path"])
+        try:
+            start = time.time()
+            if os.path.exists(os.path.join(config["folder_path"], f"{i}.json")):
+                change_comments(i, config["folder_path"], last_modified)
+            else:
+                create_file(i, config["folder_path"])
+        except Exception as e:
+            print(e)
+            continue
         sleep = 1 - (time.time() - start) if (1 - (time.time() - start)) > 0 else 0
         time.sleep(sleep + 0.01)
     config["last_archive_element"] = reply[-1]
@@ -203,7 +209,7 @@ def time_it(func):
         start = time.time()
         func(*args, **kwargs)
         end = time.time()
-        print('Ellapsed sync time: {}'.format(end - start))
+        print('Ellapsed time of sync version code: {}'.format(end - start))
 
     return wrapper
 
@@ -221,4 +227,5 @@ def main():
         check_catalog()
         archive_rec()
     except Exception as e:
+        print(e)
         pass

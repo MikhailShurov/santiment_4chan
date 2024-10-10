@@ -1,23 +1,26 @@
 import asyncio
-import os
-import shutil
 
 import schedule
 import time
 
 from fixed_functions import main as async_main
 from functions import main as sync_main
+from logger import log_message
+
+
+def scrape_async():
+    asyncio.run(async_main())
 
 
 if __name__ == "__main__":
-    asyncio.run(async_main())
-    print('async main finished work')
-    shutil.rmtree('threads')
-    if not os.path.exists('threads'):
-        print('threads deleted, started sync version')
-    sync_main()
-    print('sync main finished work')
-    schedule.every().hour.do(sync_main)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    try:
+        # sync version of scraper
+        # sync_main()
+        # schedule.every().hour.do(sync_main)
+        scrape_async()
+        schedule.every().hour.do(scrape_async)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+    except KeyboardInterrupt:
+        log_message("TERMINATED")
