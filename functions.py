@@ -159,10 +159,8 @@ def check_catalog() -> None:
             no = j["no"]
             path = os.path.join(directory, f"{no}.json")
             if os.path.exists(path):
-
                 change_comments(no, directory, last_modified)
             else:
-
                 create_file(no, directory)
             sleep = 1 - (time.time() - start) if (1 - (time.time() - start)) > 0 else 0
             time.sleep(sleep)
@@ -195,7 +193,6 @@ def archive_rec() -> None:
             else:
                 create_file(i, config["folder_path"])
         except Exception as e:
-            print(e)
             continue
         sleep = 1 - (time.time() - start) if (1 - (time.time() - start)) > 0 else 0
         time.sleep(sleep + 0.01)
@@ -209,7 +206,7 @@ def time_it(func):
         start = time.time()
         func(*args, **kwargs)
         end = time.time()
-        print('Ellapsed time of sync version code: {}'.format(end - start))
+        print('Elapsed time of sync version code: {}'.format(end - start))
 
     return wrapper
 
@@ -224,7 +221,7 @@ def main():
     except:
         print("Problems with given directory")
     try:
-        check_catalog()
+        # check_catalog()
         archive_rec()
     except Exception as e:
         print(e)

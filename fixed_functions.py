@@ -266,9 +266,9 @@ async def archive_rec() -> None:
             await asyncio.gather(*tasks)
 
             config["last_archive_element"] = reply[-1]
-            async with lock:
-                with open("config.json", "w") as file:
-                    json.dump(config, file)
+            # async with lock:
+            #     with open("config.json", "w") as file:
+            #         json.dump(config, file)
 
 
 def time_it(func):
@@ -276,7 +276,7 @@ def time_it(func):
         start = time.time()
         await func(*args, **kwargs)
         end = time.time()
-        log_message('Ellapsed time of async version code: {}'.format(end - start))
+        log_message('Elapsed time of async version code: {}'.format(end - start))
     return wrapper
 
 
@@ -290,7 +290,7 @@ async def main():
     except Exception as _:  # NOQA
         log_error("Problems with given directory")
     try:
-        await check_catalog()
+        # await check_catalog()
         await archive_rec()
     except Exception as e:  # NOQA
         log_error(e)
