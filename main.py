@@ -23,7 +23,7 @@ if __name__ == "__main__":
         #     shutil.rmtree('threads')
         # print('Sync version ARCHIVE threads collecting:')
         # sync_main()
-        schedule.every().hour.do(sync_main)
+        # schedule.every().hour.do(sync_main)
         schedule.every().hour.do(scrape_async)
         while True:
             schedule.run_pending()
