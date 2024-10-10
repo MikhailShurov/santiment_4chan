@@ -16,17 +16,17 @@ def scrape_async():
 
 if __name__ == "__main__":
     try:
-        print('Async version ARCHIVE threads collecting:')
+        # print('Async version ARCHIVE threads collecting:')
         scrape_async()
         # sync version of scraper
-        if os.path.exists('threads'):
-            shutil.rmtree('threads')
-        print('Sync version ARCHIVE threads collecting:')
-        sync_main()
-        # schedule.every().hour.do(sync_main)
-        # schedule.every().hour.do(scrape_async)
-        # while True:
-        #     schedule.run_pending()
-        #     time.sleep(1)
+        # if os.path.exists('threads'):
+        #     shutil.rmtree('threads')
+        # print('Sync version ARCHIVE threads collecting:')
+        # sync_main()
+        schedule.every().hour.do(sync_main)
+        schedule.every().hour.do(scrape_async)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
     except KeyboardInterrupt:
         log_message("TERMINATED")

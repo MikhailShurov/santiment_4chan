@@ -290,7 +290,7 @@ async def main():
     except Exception as _:  # NOQA
         log_error("Problems with given directory")
     try:
-        # await check_catalog()
+        await check_catalog()
         await archive_rec()
     except Exception as e:  # NOQA
         log_error(e)

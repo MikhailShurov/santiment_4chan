@@ -221,7 +221,7 @@ def main():
     except:
         print("Problems with given directory")
     try:
-        # check_catalog()
+        check_catalog()
         archive_rec()
     except Exception as e:
         print(e)
