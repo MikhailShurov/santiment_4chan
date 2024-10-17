@@ -254,18 +254,26 @@ async def archive_rec() -> None:
         async with session.get(ARCHIVE) as response:
             reply = await response.json()
 
-            tasks = []
             if last_local_thread not in reply:
                 last_local_thread = reply[0]
-            last_local_thread_index = reply.index(last_local_thread)
-            unmarked_ids = len(reply) - 1 - last_local_thread_index
 
-            for i in range(last_local_thread_index + 1, len(reply), unmarked_ids // TASKS_AMOUNT + 1):
-                ids = reply[i:min(i + unmarked_ids // TASKS_AMOUNT + 1, len(reply))]
-                tasks.append(asyncio.create_task(analyze_archive(ids, config["folder_path"], last_modified)))
+            diff = (reply[-1] - last_local_thread) / TASKS_AMOUNT
+
+            tasks = []
+            for i in range(TASKS_AMOUNT):
+                upper_limit = reply[-1] - i * diff
+                lower_limit = upper_limit - diff
+                worker_tasks = [value for value in reply if lower_limit <= value < upper_limit]
+                tasks.append(asyncio.create_task(analyze_archive(worker_tasks, config["folder_path"], last_modified)))
             await asyncio.gather(*tasks)
 
             config["last_archive_element"] = reply[-1]
+
+            # last_local_thread_index = reply.index(last_local_thread)
+            # unmarked_ids = len(reply) - 1 - last_local_thread_index
+            # for i in range(last_local_thread_index + 1, len(reply), unmarked_ids // TASKS_AMOUNT + 1):
+            #     ids = reply[i:min(i + unmarked_ids // TASKS_AMOUNT + 1, len(reply))]
+            #     tasks.append(asyncio.create_task(analyze_archive(ids, config["folder_path"], last_modified)))
             # async with lock:
             #     with open("config.json", "w") as file:
             #         json.dump(config, file)
@@ -277,6 +285,7 @@ def time_it(func):
         await func(*args, **kwargs)
         end = time.time()
         log_message('Elapsed time of async version code: {}'.format(end - start))
+
     return wrapper
 
 
